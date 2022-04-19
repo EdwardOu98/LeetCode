@@ -4,34 +4,28 @@ using namespace std;
 
 class Solution {
 private:
-    int N;
-    int targetLen;
-    void backtracking(vector<int>& nums, vector<int>& tmp, vector<vector<int>>& res, int index) {
-        
-        
-        if(tmp.size() == targetLen) {
-            res.push_back(tmp);
+    int targetLen, N;
+    vector<vector<int>> res;
+    vector<int> temp;
+    void dfs(vector<int>& nums, int idx) {
+        if(temp.size() == targetLen) {
+            res.push_back(temp);
             return;
         }
-        
-        for(int i = index; i < N; ++i) {
-            tmp.push_back(nums[i]);
-            backtracking(nums, tmp, res, i + 1);
-            tmp.pop_back();
+
+        for(int i = idx; i < N; ++i) {
+            temp.push_back(nums[i]);
+            dfs(nums, i + 1);
+            temp.pop_back();
         }
-        
     }
 public:
     vector<vector<int>> subsets(vector<int>& nums) {
         N = nums.size();
-        vector<vector<int>> res;
-        vector<int> tmp;
-        res.push_back(tmp);
-        
-        for(targetLen = 1; targetLen <= N; ++targetLen) {
-            backtracking(nums, tmp, res, 0);
+        for(targetLen = 0; targetLen <= N; ++targetLen) {
+            dfs(nums, 0);
         }
-        
+
         return res;
     }
 };
