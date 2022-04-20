@@ -1,21 +1,25 @@
 #include <vector>
+#include <cstring>
 
 using namespace std;
 
 class Solution {
 private:
+    vector<vector<int>> res;
+    vector<int> temp;
     int N;
-    void dfs(vector<vector<int>>& res, vector<int>& temp, vector<int>& nums, vector<bool>& used) {
+
+    void dfs(vector<int>& nums, bool used[]) {
         if(temp.size() == N) {
             res.push_back(temp);
             return;
         }
-        
+
         for(int i = 0; i < N; ++i) {
             if(!used[i]) {
                 used[i] = true;
                 temp.push_back(nums[i]);
-                dfs(res, temp, nums, used);
+                dfs(nums, used);
                 temp.pop_back();
                 used[i] = false;
             }
@@ -23,14 +27,11 @@ private:
     }
 public:
     vector<vector<int>> permute(vector<int>& nums) {
-        vector<vector<int>> res;
-        vector<int> temp;
         N = nums.size();
-        vector<bool> used(N, false);
-        
-        dfs(res, temp, nums, used);
-        
-        
+        bool used[N];
+        memset(used, false, sizeof(used));
+        dfs(nums, used);
+
         return res;
     }
 };
