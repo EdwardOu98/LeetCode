@@ -5,12 +5,12 @@ using namespace std;
 class Solution {
 public:
     int hammingWeight(uint32_t n) {
-        int count = 0;
+        int res = 0;
         while(n) {
-            n &= (n - 1);
-            ++count;
+            n &= (n - 1); // This will set the lowest 1 to 0
+            ++res;
         }
-
-        return count;
+        
+        return res;
     }
 };

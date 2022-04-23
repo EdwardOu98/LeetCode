@@ -15,34 +15,39 @@ using namespace std;
  * };
  */
 class Solution {
+// Idea: use level-order traversal, the last node in each level is the result we want
 public:
     vector<int> rightSideView(TreeNode* root) {
         if(!root) {
             return {};
         }
-        vector<int> res;
         queue<TreeNode*> q;
         q.push(root);
         int n, i;
-        TreeNode* temp;
-
+        TreeNode* node;
+        vector<int> res;
+        
         while(!q.empty()) {
             n = q.size();
             for(i = 0; i < n; ++i) {
-                temp = q.front();
+                // Get the node at the front of the queue
+                node = q.front();
                 q.pop();
+                // If the current node is the tail of the queue,
+                // push its value into the result array
                 if(i == n - 1) {
-                    res.push_back(temp->val);
+                    res.push_back(node->val);
                 }
-                if(temp->left) {
-                    q.push(temp->left);
+                
+                if(node->left) {
+                    q.push(node->left);
                 }
-                if(temp->right) {
-                    q.push(temp->right);
+                if(node->right) {
+                    q.push(node->right);
                 }
             }
         }
-
+        
         return res;
     }
 };
