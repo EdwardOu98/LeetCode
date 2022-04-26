@@ -1,5 +1,4 @@
 #include <string>
-#include <vector>
 #include <algorithm>
 
 using namespace std;
@@ -7,16 +6,24 @@ using namespace std;
 class Solution {
 private: 
     bool counter(string& s, string& t) {
-        vector<int> schar(26, 0), tchar(26, 0);
-        for(char& c : s) {
-            ++schar[c - 'a'];
+        int n = s.length();
+        if(t.length() != n) {
+            return false;
         }
-
-        for(char& c : t) {
-            ++tchar[c - 'a'];
+        int charCount[26] = {0};
+        
+        for(int i = 0; i < n; ++i) {
+            ++charCount[s[i] - 'a'];
+            --charCount[t[i] - 'a'];
         }
-
-        return schar == tchar;
+        
+        for(int i = 0; i < 26; ++i) {
+            if(charCount[i] != 0) {
+                return false;
+            }
+        }
+        
+        return true;
     }
 
     bool sorting(string& s, string& t) {
