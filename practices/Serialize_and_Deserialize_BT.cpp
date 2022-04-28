@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <sstream>
 
 using namespace std;
 
@@ -15,73 +16,79 @@ using namespace std;
  */
 class Codec {
 public:
-    // Both serialization and deserialization uses level order traversal
+
     // Encodes a tree to a single string.
     string serialize(TreeNode* root) {
-        if(root == nullptr) {
-            return "";
+        // If the tree is empty, return a "#"
+        if(!root) {
+            return "#";
         }
-        string data;
+        
         queue<TreeNode*> q;
-
         q.push(root);
-
+        string data;
+        
         while(!q.empty()) {
-            TreeNode* curr = q.front();
+            TreeNode* temp = q.front();
             q.pop();
-
-            // if current node is not null, put its value in
-            // data and push its left and right child into the 
-            // queue
-            if(curr) {
-                data.append(to_string(curr->val) + " ");
-                q.push(curr->left);
-                q.push(curr->right);
+            // If the current node is not null
+            if(temp) {
+                // Add a space to separate the current node
+                // with the previous node
+                data += " " + to_string(temp->val);
+                // Add the left and right child of the current node
+                // to the queue
+                q.push(temp->left);
+                q.push(temp->right);
             }
             else {
-                data.append("null ");
+                // If the current node is null, add a "#"
+                data += " #";
             }
         }
-
-        return data;
+        
+        // Because the data string contains a leading space, we will get rid
+        // of the leading space and use the res as the return value
+        return data.substr(1);
     }
 
     // Decodes your encoded data to tree.
     TreeNode* deserialize(string data) {
-        if(data.empty()) {
+        if(data == "#") {
             return nullptr;
         }
-        int i = 0, j = 0, n = data.length();
+        
         vector<TreeNode*> nodes;
-        while(j < n) {
-            if(data[j] == ' '){
-                // extract a node value from input data
-                string val = data.substr(i, j - i);
-                if(val == "null") {
-                    nodes.push_back(nullptr);
-                }
-                else {
-                    nodes.push_back(new TreeNode(stoi(val)));
-                }
-                i = j + 1;
+        stringstream ss(data);
+        string str;
+        
+        while(getline(ss, str, ' ')) {
+            // If the current string is "#", it means we
+            // have a NULL node
+            if(str == "#") {
+                nodes.push_back(nullptr);
             }
-            ++j;
+            // Otherwise, create a new node with the value
+            // of the string
+            else {
+                nodes.push_back(new TreeNode(stoi(str)));
+            }
         }
-
-        // pos indicates the index of the children of the cirrent node
-        int pos = 1;
-        n = nodes.size();
-        for(i = 0; i < n; ++i) {
+        
+        int pos = 1; // Indicate the position of the child nodes
+        int n = nodes.size();
+        
+        for(int i = 0; i < n; ++i) {
             if(nodes[i]) {
                 nodes[i]->left = nodes[pos++];
                 nodes[i]->right = nodes[pos++];
             }
         }
-
+        
         return nodes[0];
     }
 };
 
 // Your Codec object will be instantiated and called as such:
-// Codec codec;
-// codec.deserialize(codec.serialize(root));
+// Codec ser, deser;
+// TreeNode* ans = deser.deserialize(ser.serialize(root));
