@@ -71,39 +71,50 @@ private:
     }
     
     int usingQueue(string beginWord, string endWord, vector<string>& wordList) {
+        // If endWord doesn't exist in the wordList, return 0
         if(find(wordList.begin(), wordList.end(), endWord) == wordList.end()) {
             return 0;
         }
-        unordered_set<string> dict(wordList.begin(), wordList.end());
-        queue<string> q;
+
+        unordered_set<string> dict(wordList.begin(), wordList.end()); // Dictionary
+        queue<string> q; // Stores all words that can be converted from a word by
+                         // changing one of its characters
         q.push(beginWord);
-        int steps = 1, wordLen = beginWord.length();
-        int i, j, n;
-        
+
+        int n, i; // loop variables
+        int steps = 1; // Record the length of the transformation sequence
+
         while(!q.empty()) {
             n = q.size();
             for(i = 0; i < n; ++i) {
-                string currWord = q.front();
+                string word = q.front();
                 q.pop();
-                if(currWord == endWord) {
+                // If we see the endWord, we can return immediately
+                if(word == endWord) {
                     return steps;
                 }
-                dict.erase(currWord);
-                for(j = 0; j < wordLen; ++j) {
-                    char c = currWord[j];
-                    for(char a = 'a'; a <= 'z'; ++a) {
-                        currWord[j] = a;
-                        if(dict.count(currWord)){
-                            q.push(currWord);
-                            dict.erase(currWord);
+
+                int len = word.length();
+                // Change the character of the current word one by one
+                for(int j = 0; j < len; ++j) {
+                    char c = word[j];
+                    for(char ch = 'a'; ch <= 'z'; ++ch) {
+                        word[j] = ch;
+                        // If we found the transformed word in the dictionary,
+                        // add the word into the queue and remove it from the dictionary
+                        // to avoid repetitive calculation
+                        if(dict.count(word)) {
+                            q.push(word);
+                            dict.erase(word);
                         }
                     }
-                    currWord[j] = c;
+                    word[j] = c;
                 }
             }
+
             ++steps;
         }
-        
+
         return 0;
     }
 public:
