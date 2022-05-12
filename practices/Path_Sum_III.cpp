@@ -8,43 +8,48 @@ using namespace std;
  *     int val;
  *     TreeNode *left;
  *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
 class Solution {
-// 思路：dfs+前缀和
-private: 
-    int paths = 0;
+private:
+    int totalPaths = 0;
     int target;
     unordered_map<int, int> prefixSum;
+
     void dfs(TreeNode* root, int sum) {
+        // When we see an empty node, return to the previous level
         if(!root) {
             return;
         }
-        // 计算当前路径(从根结点到当前结点)的前缀和(包括当前结点自身)，如果
-        // 当前前缀和和目标和的差值在哈希表中出现过，则说明该差值的出现次数
-        // 就是符合条件的序列的出现次数
+
         sum += root->val;
+        // If we have seen the difference beween the current sum and
+        // the target before, then the number of sequence that meets
+        // the requirement is equal to the times this difference
+        // occurred before
         if(prefixSum[sum - target]) {
-            paths += prefixSum[sum - target];
+            totalPaths += prefixSum[sum - target];
         }
-        // 将当前结点的前缀和出现次数加1
+
+        // Increment the count of the current prefix sum
         ++prefixSum[sum];
-        // 探索左右子树
+
+        // Visit the left and right subtree
         dfs(root->left, sum);
         dfs(root->right, sum);
-        // 将当前结点的前缀和出现次数减1(向上返回)
+
+        // Decrement the count of the current prefix sum
+        // and return to the previous level
         --prefixSum[sum];
     }
 public:
-    int pathSum(TreeNode* root, int targetSum) {
+    int pathSum(TreeNode* root, int sum) {
         if(root) {
-            target = targetSum;
+            target = sum;
             prefixSum[0] = 1;
             dfs(root, 0);
         }
-        return paths;
+        return totalPaths;
     }
 };

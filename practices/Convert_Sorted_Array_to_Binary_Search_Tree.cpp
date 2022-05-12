@@ -8,24 +8,36 @@ using namespace std;
  *     int val;
  *     TreeNode *left;
  *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
 class Solution {
+// Basic idea: Find the median in the array and make it the root
+// of the BST. Then recursively build the left and right subtree
+// with the same rule. 
 private:
-    TreeNode* buildTree(vector<int>& nums, int l, int r) {
-        if(l > r) {
+    TreeNode* buildTree(vector<int>& nums, int left, int right) {
+        // Base case 1: When the current section of the array contains
+        // 0 element, return a null node
+        if(left > right) {
             return nullptr;
         }
-        
-        int mid = l + (r - l) / 2;
+
+        // Base case 2: When the current section of the array contains
+        // only 1 element, build a node with the element and return the
+        // node
+        if(left == right) {
+            return new TreeNode(nums[left]);
+        }
+
+        // Find the median of the current section of the input array
+        int mid = left + (right - left) / 2;
         TreeNode* root = new TreeNode(nums[mid]);
-        
-        root->left = buildTree(nums, l, mid - 1);
-        root->right = buildTree(nums, mid + 1, r);
-        
+
+        // Recursively build the left and right subtree
+        root->left = buildTree(nums, left, mid - 1);
+        root->right = buildTree(nums, mid + 1, right);
+
         return root;
     }
 public:

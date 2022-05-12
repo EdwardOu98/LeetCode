@@ -6,33 +6,44 @@ using namespace std;
  *     int val;
  *     TreeNode *left;
  *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
 class Solution {
-// Idea: use inorder traversal. If the previous node's value
-// is greater than or equal to the current node's value, return
-// false
+// Basic idea: The inorder traversal of a BST will result in a
+// increasing sequence. So we simply need to use inorder traversal
+// to find whether there are any number that are not in the proper
+// position
 private:
-    TreeNode* prev = nullptr;
+    stack<TreeNode*> s;
+    void place(TreeNode* root) {
+        while(root) {
+            s.push(root);
+            root = root->left;
+        }
+    }
 public:
     bool isValidBST(TreeNode* root) {
-        if(!root) {
-            return true;
+        place(root);
+
+        // Record the previous element
+        long prev = (long) INT_MIN - 1;
+
+        while(!s.empty()) {
+            TreeNode* curr = s.top();
+            s.pop();
+            // If the current node's value is less than or equal
+            // to the previous value, then the tree is invalid
+            if(curr->val <= prev) {
+                return false;
+            }
+            // Update the previous value and prepare the next node
+            // to visit
+            prev = curr->val;
+            curr = curr->right;
+            place(curr);
         }
-        
-        if(!isValidBST(root->left)) {
-            return false;
-        }
-        
-        if(prev && prev->val >= root->val) {
-            return false;
-        }
-        
-        prev = root;
-        
-        return isValidBST(root->right);
+
+        return true;
     }
 };
