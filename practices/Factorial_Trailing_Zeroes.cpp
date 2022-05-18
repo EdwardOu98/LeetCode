@@ -1,6 +1,17 @@
 using namespace std;
 
 class Solution {
+private:
+    int iterativeApproach(int n) {
+        int count = 0;
+
+        while(n >= 5) {
+            n /= 5;
+            count += n;
+        }
+
+        return count;
+    }
 public:
     // Idea: to generate trailing zeroes, it needs
     // to be a multiple of 10. And because 10 = 2 * 5
