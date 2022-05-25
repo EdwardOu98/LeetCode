@@ -8,26 +8,35 @@ private:
     int threshold;
     
     int boyerMooreVoting(vector<int>& nums) {
-        int count = 0;
-        int ret;
-        
-        // When count is 0, we change the return value
-        // to the current number. 
-        for(int& num : nums) {
-            if(!count) {
-                ret = num;
+        int count = 0, res;
+        // Find a candidate for the majority element
+        for(int& n : nums) {
+            if(count == 0) {
+                res = n;
             }
-            // When the return value is the same as the
-            // current number, count += 1. When the return
-            // value is different from the current number,
-            // count -= 1. Because the majority element 
-            // has more counts than other numbers, it's more
-            // likely to stay after we iterate through the
-            // entire string
-            count += (ret == num) ? 1 : -1;
+            if(n == res) {
+                ++count;
+            }
+            else {
+                --count;
+            }
         }
-        
-        return ret;
+
+        // Calculate the count for the candidate
+        count = 0;
+        for(int& n : nums) {
+            if(n == res) {
+                ++count;
+            }
+        }
+
+        int len = nums.size();
+
+        // If the count of candidate is greater than half of
+        // the length of the input array, the candidate is the
+        // majority element. Otherwise, the input array doesn't
+        // have a majority element, return -1. 
+        return count > len / 2 ? res : -1;
     }
     
     int bruteForce(vector<int>& nums) {
